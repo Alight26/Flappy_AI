@@ -1,5 +1,6 @@
 import gymnasium as gym 
 import flappy_bird_gymnasium
+import agent_rl as agent
 
 env = gym.make("FlappyBird-v0", render_mode="human", use_lidar=False)
 step = 0
@@ -19,19 +20,35 @@ def state_extractor(obs):
     pipe_bottom = obs[5] # Next bottom pipes x position
     velocity = obs[10] # The players Velocity 
     # rising, fast_fall and slow_fall will be if statements depending on the velocity 
-    if y > pipe_top:
+    gap_min = min(pipe_top, pipe_bottom)
+    gap_max = max(pipe_top, pipe_bottom)
+    if y < gap_min:
         gap_index = 0 # above the pipe gap
-    elif y < pipe_bottom:
-        gap_index = 1 # below the pipe gap
+        print(f"Above Gap: {gap_index}")
+    elif y > gap_max:
+        gap_index = 2 # below the pipe gap
+        print(f"Below Gap: {gap_index}")
     else:
-        gap_index = 2
+        gap_index = 1
+        print(f"Between Gap: {gap_index}")
+    
+
 
     if velocity > 0:
         velo_index = 0 # Rising 
+        print(f"Rising: {velo_index}")
     elif velocity < -0.6:
-        velo_index = 1 # Fast Falling
+        velo_index = 2 # Fast Falling
+        print(f"Fast Falling: {velo_index}")
     else:
-        velo_index = 2 # Slow Falling
+        velo_index = 1 # Slow Falling
+        print(f"Slow Falling: {velo_index}")
+
+
+
+    state_index = gap_index * 3 + velo_index
+    print(f"State_Index: {state_index}")
+    return state_index
 
 
 
@@ -42,8 +59,10 @@ while True:
 
     # Random action step
     #action = env.action_space.sample()
+    #obs, reward, terminated, _, info = env.step(action)
+    state = state_extractor(obs)
 
-
+    
     # jump every 5 time steps
     jump = step % 20
     if (jump == 1):
@@ -54,7 +73,7 @@ while True:
         action = 0
         obs, reward, terminated, _, info = env.step(action)
         print(f"observations not jumping: {obs[:]}")
-
+    
     
     print(f"step: {step}")
     print(f"action: {action}")
