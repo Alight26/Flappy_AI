@@ -22,15 +22,17 @@ class Agent:
         self.Q = np.zeros([self.num_states, self.num_actions])
 
     def choose_action(self, state):
-        """
+        
         if random.uniform(0, 1) < self.epsilon:
             return env.action_space.sample()
             # if the random number is less than epsilon it will do a random action (Exploring)
-        """
-        
-        action = np.argmax(self.Q[state, :])
-        self.action_list.append(action) # Record the actions taken
-        return action
+    
+        else:
+
+            action = np.argmax(self.Q[state, :])
+            self.action_list.append(action) # Record the actions taken
+            print(f"actions used: {self.action_list}")
+            return action
 
 
 

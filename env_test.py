@@ -8,7 +8,7 @@ jump = 0
 
 
 obs, info = env.reset()
-action = 1
+# action = 1
 
 # State extractor 
 
@@ -51,9 +51,12 @@ def state_extractor(obs):
     return state_index
 
 
+next_state = None
+
+
 
 while True: 
-    step += 1
+    
     # Next Actions:
     # (Feed the observations to your agent)
 
@@ -62,8 +65,20 @@ while True:
     #obs, reward, terminated, _, info = env.step(action)
     state = state_extractor(obs)
 
+
+    # picking the correct action to use 
+    action = agent.choose_action(state)
+
+
+    obs, reward, terminated, truncated, info = env.step(action)
+    
+    done = terminated or truncated
+    agent.update(state, action, reward, next_state, done)
+    state = next_state
+
     
     # jump every 5 time steps
+    '''
     jump = step % 20
     if (jump == 1):
         action = 1
@@ -73,6 +88,7 @@ while True:
         action = 0
         obs, reward, terminated, _, info = env.step(action)
         print(f"observations not jumping: {obs[:]}")
+    '''
     
     
     print(f"step: {step}")
@@ -100,7 +116,7 @@ while True:
     
 
     # Checking if player is still alive 
-    if terminated:
+    if done:
         #print(env.observation_space)
         #print(env.spec)
         #print(env.unwrapped)
