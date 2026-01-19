@@ -22,13 +22,15 @@ class Agent:
         self.Q = np.zeros([self.num_states, self.num_actions])
 
     def choose_action(self, state):
+        """
         if random.uniform(0, 1) < self.epsilon:
             return env.action_space.sample()
             # if the random number is less than epsilon it will do a random action (Exploring)
-        else: 
-            action = np.argmax(self.Q[state, :])
-            self.action_list.append(action) # Record the actions taken
-            return action
+        """
+        
+        action = np.argmax(self.Q[state, :])
+        self.action_list.append(action) # Record the actions taken
+        return action
 
 
 
@@ -47,9 +49,9 @@ class Agent:
         current = self.Q[state, action] # Getting the current state and action 
 
         if done: 
-            target = reward # if they hit the target? getting through the pipes 
+            target = reward # Episode has ended
         else:
-            best_next = np.max(self.Q[next_state, : ]) # Getting next best action to use 
+            best_next = np.max(self.Q[next_state, :]) # Getting next best action to use 
             target = reward + self.gamma * best_next # next best reward when just playing 
 
         self.Q[state, action] = current + self.alpha * (target - current) # setting the next state. Based upon the rewards and actions on the previous state
