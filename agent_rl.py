@@ -1,6 +1,6 @@
 import numpy as np
 import random 
-from env_test import env
+
 
 class Agent:
     def __init__(self, alpha, gamma, epsilon, epsilon_decay, min_epsilon, num_states, num_actions, num_episode):
@@ -23,8 +23,8 @@ class Agent:
 
     def choose_action(self, state):
         
-        if random.uniform(0, 1) < self.epsilon:
-            return env.action_space.sample()
+        if random.random() < self.epsilon:
+            return random.randrange(self.num_actions)
             # if the random number is less than epsilon it will do a random action (Exploring)
     
         else:

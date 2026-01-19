@@ -1,15 +1,30 @@
 import gymnasium as gym 
 import flappy_bird_gymnasium
-import agent_rl as agent
+from agent_rl import Agent
 
 env = gym.make("FlappyBird-v0", render_mode="human", use_lidar=False)
 step = 0
 jump = 0
+count = 0
 
 
 obs, info = env.reset()
 # action = 1
 
+
+# Creating my agent 
+num_states = 9
+num_actions = 2
+
+agent = Agent(
+    num_states= num_states,
+    num_actions= num_actions,
+    alpha = 0.1,
+    gamma = 0.9,
+    epsilon = 1.0,
+    epsilon_decay= 0.995,
+    min_epsilon=0.05
+)
 # State extractor 
 
 
@@ -51,11 +66,12 @@ def state_extractor(obs):
     return state_index
 
 
-next_state = None
+
 
 
 
 while True: 
+    count += 1
     
     # Next Actions:
     # (Feed the observations to your agent)
@@ -70,11 +86,15 @@ while True:
     action = agent.choose_action(state)
 
 
-    obs, reward, terminated, truncated, info = env.step(action)
+    next_obs, reward, terminated, truncated, info = env.step(action)
     
     done = terminated or truncated
+
+    next_state = state_extractor(next_obs)
+
     agent.update(state, action, reward, next_state, done)
-    state = next_state
+    
+    obs = next_obs
 
     
     # jump every 5 time steps
@@ -91,11 +111,12 @@ while True:
     '''
     
     
-    print(f"step: {step}")
+    #print(f"step: {step}")
     print(f"action: {action}")
     print(f"reward: {reward}")
     print(f"Terminated: {terminated}")
     print(f"Score: {info}")
+    print(f"Count: {count}")
 
 
     
@@ -116,12 +137,15 @@ while True:
     
 
     # Checking if player is still alive 
-    if done:
+    if done and count < 100:
         #print(env.observation_space)
         #print(env.spec)
         #print(env.unwrapped)
+        agent.decay_epsilon()
         obs, info = env.reset()
 
+        continue
+    else:
         break
 
 env.close()
