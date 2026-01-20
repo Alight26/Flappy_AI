@@ -31,7 +31,7 @@ class Agent:
 
             action = np.argmax(self.Q[state, :])
             self.action_list.append(action) # Record the actions taken
-            print(f"actions used: {self.action_list}")
+            #print(f"actions used: {self.action_list}")
             return action
 
 

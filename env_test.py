@@ -10,7 +10,7 @@ count = 0
 
 
 TOTAL_EPISODES = 1000000
-RENDER_EVERY = 500
+RENDER_EVERY = 10000
 
 
 obs, info = train_env.reset()
@@ -45,30 +45,30 @@ def state_extractor(obs):
     gap_max = max(pipe_top, pipe_bottom)
     if y < gap_min:
         gap_index = 0 # above the pipe gap
-        print(f"Above Gap: {gap_index}")
+        #print(f"Above Gap: {gap_index}")
     elif y > gap_max:
         gap_index = 2 # below the pipe gap
-        print(f"Below Gap: {gap_index}")
+        #print(f"Below Gap: {gap_index}")
     else:
         gap_index = 1
-        print(f"Between Gap: {gap_index}")
+        #print(f"Between Gap: {gap_index}")
     
 
 
     if velocity > 0:
         velo_index = 0 # Rising 
-        print(f"Rising: {velo_index}")
+        #print(f"Rising: {velo_index}")
     elif velocity < -0.6:
         velo_index = 2 # Fast Falling
-        print(f"Fast Falling: {velo_index}")
+        #print(f"Fast Falling: {velo_index}")
     else:
         velo_index = 1 # Slow Falling
-        print(f"Slow Falling: {velo_index}")
+        #print(f"Slow Falling: {velo_index}")
 
 
 
     state_index = gap_index * 3 + velo_index
-    print(f"State_Index: {state_index}")
+   # print(f"State_Index: {state_index}")
     return state_index
 
 def run_demo_episode():
@@ -85,6 +85,8 @@ def run_demo_episode():
         demo_next_obs, demo_reward, demo_terminated, demo_truncated, demo_info, = demo_env.step(demo_action)
         demo_done = demo_terminated or demo_truncated
         demo_obs = demo_next_obs
+
+
 
     agent.epsilon = old_epsilon
 
@@ -130,7 +132,7 @@ while True:
         action = 0
         obs, reward, terminated, _, info = env.step(action)
         print(f"observations not jumping: {obs[:]}")
-    '''
+    
     
     
     #print(f"step: {step}")
@@ -141,6 +143,7 @@ while True:
         print(f"Terminated: {terminated}")
         print(f"Score: {info}")
         print(f"Count: {count}")
+    '''
 
 
     
@@ -167,6 +170,11 @@ while True:
         #Human rendering mode to check progress
         if agent.num_episode % RENDER_EVERY == 0:
             print(f"This is the demo episode{agent.num_episode}")
+            print(f"action: {action}")
+            print(f"reward: {reward}")
+            print(f"Terminated: {terminated}")
+            print(f"Score: {info}")
+            print(f"Count: {count}")
             run_demo_episode()
 
         if agent.num_episode >= TOTAL_EPISODES:
