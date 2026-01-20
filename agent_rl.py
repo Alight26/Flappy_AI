@@ -59,6 +59,7 @@ class Agent:
         self.Q[state, action] = current + self.alpha * (target - current) # setting the next state. Based upon the rewards and actions on the previous state
 
 
+
     def decay_epsilon(self): # Reduces exploration after each episode 
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay) # if it reaches min_epsilon it won't decay further
         return self.epsilon
