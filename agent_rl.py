@@ -61,6 +61,6 @@ class Agent:
 
 
     def decay_epsilon(self): # Reduces exploration after each episode 
-        self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay) # if it reaches min_epsilon it won't decay further
+        self.epsilon = max(self.min_epsilon, self.epsilon - self.epsilon_decay) # if it reaches min_epsilon it won't decay further
         return self.epsilon
 
